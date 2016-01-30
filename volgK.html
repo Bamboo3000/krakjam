@@ -6,6 +6,7 @@
 	<title>Volg!</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="phaser/build/phaser.min.js"></script>  
+    <script src="src/NPC.js"></script>
     <style>
         body,
         html{
@@ -136,11 +137,64 @@
         var sprite1;
         var sprites2;
         var sprite2;
+        gameWidth = 300;
+        gameHeight = 300;
+        screenWidth = 1024;
+        screenHeight = 768;
+        positionRadius = 50;
+        var speed = 200;
+        var totalShifts = 40;
+        var acceptedRadius = 100;
+        var playerSpeed = 150;
+        var NPCprobability = 0.25;
+        var placeShifts = [];
+        var currentNPCs;
+        var currentShape = circle;
+        var aims = [];
+        var NPCarray = []
+        var timer;
         // var rect;
         // var graphics;
 
-        function create () {
+         function updateNPC(NPC){
+            var pos = currentShape(timer.ms+NPC.shift);
+            var aimObject = game.add.sprite(pos[0], pos[1], 'npc');
+            aimObject.visible = false;
+            if(game.physics.arcade.distanceBetween(NPC, aimObject)>20)
+                game.physics.arcade.moveToObject(NPC,aimObject , 170);
+            aimObject.destroy();
+        }
 
+
+
+        function makeNPC(posX, posY, formation, shift, spriteName){
+            var NPC;
+            NPC = game.add.sprite(posX, posY, spriteName);
+            NPC.update = formation;
+            NPC.shift = shift;
+            game.physics.arcade.enable(NPC);
+            game.physics.enable(NPC, Phaser.Physics.ARCADE);
+            NPC.body.collideWorldBounds = true;
+            NPC.body.bounce.setTo(1, 1);
+            NPC.body.velocity.x = 100;
+            NPC.body.velocity.y = 100;
+            return NPC;
+        }
+ 
+        function generateShifts(){
+            var smallestDistance = Math.PI*2/totalShifts*1000;
+            for(var i=0; i<totalShifts; i++){
+                placeShifts[i] = smallestDistance*i;
+            }
+        }
+
+
+        function create () {
+            
+
+
+            timer = game.time.create(false);
+            timer.start();
             // var rects = game.add.group();
             // rects.enableBody = true;
             // rects.physicsBodyType = Phaser.Physics.ARCADE;
@@ -205,8 +259,32 @@
             LKey = game.input.keyboard.addKey(Phaser.KeyCode.LEFT);
             RKey = game.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
 
+            generateShifts();
+            currentNPCs = 0;
+            for (var i = 0; i < totalShifts; i++){
+                var r = Math.random();
+                if(r<NPCprobability){
+                    NPCarray[currentNPCs] = makeNPC(Math.random()*gameWidth, Math.random()*gameHeight, currentShape, placeShifts[i], 'npc');
+
+                    currentNPCs++;
+                }
+                
+            }
         }
 
+
+
+         function checkPlayerPosition(){
+            for(var i=0; i< totalShifts; i++){
+                var pos = {x: currentShape(timer.ms+placeShifts[i])[0], y: currentShape(timer.ms+placeShifts[i])[1]};
+                var distance = (sprite1.x-pos.x)*(sprite1.x-pos.x)+(sprite1.y-pos.y)*(sprite1.y-pos.y);
+                //console.log(distance);
+                if(distance<positionRadius*positionRadius){
+                    return true;
+                }
+            }
+            return false;
+        }
         function update(){
 
         	sprite1.body.velocity.x = 0;
@@ -218,7 +296,16 @@
     		game.world.wrap(sprite1, 0, true);
             game.world.wrap(sprite2, 0, true);
 
-            var speed = 250;
+            
+
+
+
+            if(checkPlayerPosition())
+                console.log('in');
+
+             for(var i=0; i< currentNPCs; i++){
+                     updateNPC(NPCarray[i]);
+            }
 
         	if (wKey.isDown){
 		        // console.log('w');
