@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Volg!</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -137,47 +138,78 @@
         var sprite1;
         var sprites2;
         var sprite2;
-        gameWidth = 300;
-        gameHeight = 300;
+        gameWidth = 600;
+        gameHeight = 400;
         screenWidth = 1024;
         screenHeight = 768;
         positionRadius = 50;
-        var speed = 200;
+        var speed = 150;
         var totalShifts = 40;
-        var acceptedRadius = 100;
-        var playerSpeed = 150;
-        var NPCprobability = 0.25;
+        var acceptedRadius = 50;
+        var playerSpeed = 200;
+        var NPCprobability = 0.55;
         var placeShifts = [];
         var currentNPCs;
+        var NPCscattering = 50;
         var currentShape = circle;
         var aims = [];
         var NPCarray = []
         var timer;
+        var scatteringArray = [];
+        var NPChp = [];
         // var rect;
         // var graphics;
 
-         function updateNPC(NPC){
-            var pos = currentShape(timer.ms+NPC.shift);
-            var aimObject = game.add.sprite(pos[0], pos[1], 'npc');
-            aimObject.visible = false;
-            if(game.physics.arcade.distanceBetween(NPC, aimObject)>20)
-                game.physics.arcade.moveToObject(NPC,aimObject , 170);
-            aimObject.destroy();
+
+        
+        function random(seed) {
+            var x = Math.sin(seed++) * 10000;
+            return x - Math.floor(x);
         }
 
 
 
-        function makeNPC(posX, posY, formation, shift, spriteName){
+        function updateNPC(NPC){
+            var pos;
+            if(!NPC.dead)
+                pos = currentShape(timer.ms+NPC.shift);
+            else{
+                pos = [];
+                pos[0] = -100;
+                pos[1] = -100;
+            }
+            var seed = NPC.number*100+Math.floor(timer.ms/6000)+1;
+            var aimObject = game.add.sprite(pos[0]+NPCscattering*(random(seed)-0.5), pos[1]+NPCscattering*(random(seed+1)-0.5), 'npc');
+            aimObject.visible = false;
+            var distance = game.physics.arcade.distanceBetween(NPC, aimObject);
+
+            game.physics.arcade.moveToObject(NPC,aimObject , speed*Math.atan(distance/10));
+           
+            aimObject.destroy();
+        }
+
+        function updateScattering(){
+            for(var i=0; i<currentNPCs; i++){
+                scatteringArray[i].x = Math.random()*250;
+                scatteringArray[i].y = Math.random()*250;
+            }
+        }
+
+
+        function makeNPC(posX, posY, formation, shift, spriteName, number){
             var NPC;
             NPC = game.add.sprite(posX, posY, spriteName);
             NPC.update = formation;
             NPC.shift = shift;
+            NPC.number = number;
             game.physics.arcade.enable(NPC);
             game.physics.enable(NPC, Phaser.Physics.ARCADE);
             NPC.body.collideWorldBounds = true;
             NPC.body.bounce.setTo(1, 1);
             NPC.body.velocity.x = 100;
             NPC.body.velocity.y = 100;
+            NPC.animations.add('walk', [0, 1], 10, true);
+            NPC.dead = false;
             return NPC;
         }
  
@@ -188,6 +220,22 @@
             }
         }
 
+        function resetNPCs(){
+            currentNPCs = 0;
+            for (var i = 0; i < totalShifts; i++){
+                var r = Math.random();
+                if(r<NPCprobability){
+                    NPCarray[currentNPCs] = makeNPC((Math.random()-0.5)*screenWidth+screenWidth/2, (Math.random()-0.5)*screenHeight+screenHeight/2, currentShape, placeShifts[i], 'npc', currentNPCs);
+                    NPCarray[currentNPCs].animations.play('walk');
+                    currentNPCs++;
+                }
+                
+            }
+
+            for (var i = 0; i < currentNPCs; i++){
+                NPChp[i] = 300;
+            }
+        }
 
         function create () {
             
@@ -208,6 +256,9 @@
             // graphics.drawCircle(0, 0, 300);
             
             // game.world.setBounds(0.5, 0.5, 800, 600);
+
+
+
             game.world.bounds.setTo(0, 0, 800, 600);    
             if (game.camera.bounds){        //  The Camera can never be smaller than the game size        
                 game.camera.bounds.setTo(112, 84, 800, 600);    
@@ -260,24 +311,15 @@
             RKey = game.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
 
             generateShifts();
-            currentNPCs = 0;
-            for (var i = 0; i < totalShifts; i++){
-                var r = Math.random();
-                if(r<NPCprobability){
-                    NPCarray[currentNPCs] = makeNPC(Math.random()*gameWidth, Math.random()*gameHeight, currentShape, placeShifts[i], 'npc');
-
-                    currentNPCs++;
-                }
-                
-            }
+            resetNPCs();
         }
 
 
 
-         function checkPlayerPosition(){
+         function checkPlayerPosition(spr){
             for(var i=0; i< totalShifts; i++){
                 var pos = {x: currentShape(timer.ms+placeShifts[i])[0], y: currentShape(timer.ms+placeShifts[i])[1]};
-                var distance = (sprite1.x-pos.x)*(sprite1.x-pos.x)+(sprite1.y-pos.y)*(sprite1.y-pos.y);
+                var distance = (spr.x-pos.x)*(spr.x-pos.x)+(spr.y-pos.y)*(spr.y-pos.y);
                 //console.log(distance);
                 if(distance<positionRadius*positionRadius){
                     return true;
@@ -297,10 +339,17 @@
             game.world.wrap(sprite2, 0, true);
 
             
+            for (var i = 0; i < currentNPCs; i++){
+                if(!checkPlayerPosition(NPCarray[i]))
+                    NPChp[i]--;
+                if(NPChp[i]<0){
+                    NPCarray[i].dead = true;
+                    console.log("banished!");
+                }
+            }
 
 
-
-            if(checkPlayerPosition())
+            if(checkPlayerPosition(sprite1))
                 console.log('in');
 
              for(var i=0; i< currentNPCs; i++){
@@ -309,23 +358,23 @@
 
         	if (wKey.isDown){
 		        // console.log('w');
-		        sprite1.body.velocity.y = -(speed);
+		        sprite1.body.velocity.y = -(playerSpeed);
                 // sprite1.damage(1);
                 // console.log(sprite1.health);
 		    }
 		    if (sKey.isDown){
 		        // console.log('s');
-		        sprite1.body.velocity.y = (speed);
+		        sprite1.body.velocity.y = (playerSpeed);
                 // sprite1.heal(1);
                 // console.log(sprite1.health);
 		    }
 		    if (aKey.isDown){
 		        // console.log('a');
-		        sprite1.body.velocity.x = -(speed);
+		        sprite1.body.velocity.x = -(playerSpeed);
 		    }
 		    if (dKey.isDown){
 		        // console.log('d');
-		        sprite1.body.velocity.x = (speed);
+		        sprite1.body.velocity.x = (playerSpeed);
 		    }
 
             if (UKey.isDown){

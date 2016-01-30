@@ -13,6 +13,10 @@ function twoStep(t){
     return square(1000*Math.sin(t/300)+t);
 }
 
+function banishment(t){
+    return [-100, -100];
+}
+
 function saw(t){
     var oldT = t;
     var period = 7000;
