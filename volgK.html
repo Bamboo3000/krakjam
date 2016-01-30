@@ -107,7 +107,10 @@
 
         function preload () {
 
-            game.load.image('logo', 'ludek.jpg');
+            // game.load.image('logo', 'ludek.jpg');
+            game.load.image('village', 'img/village.jpg');
+            game.load.spritesheet('npc', 'img/npc.png', 50, 80, 2);
+            game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 2);
 
             $('.intro').animate({
                 opacity: 1
@@ -129,8 +132,10 @@
         //     return[Math.sin(t)*gameWidth/2+screenWidth/2, Math.cos(t)*gameHeight/2+screenHeight/2];
         // }
 
-        var sprites;
-        var sprite;
+        var sprites1;
+        var sprite1;
+        var sprites2;
+        var sprite2;
         // var rect;
         // var graphics;
 
@@ -148,81 +153,137 @@
             // graphics.lineStyle(8, 0xffd900);
             // graphics.drawCircle(0, 0, 300);
             
-            game.world.setBounds(0, 0, 1024, 768);
+            // game.world.setBounds(0.5, 0.5, 800, 600);
+            game.world.bounds.setTo(0, 0, 800, 600);    
+            if (game.camera.bounds){        //  The Camera can never be smaller than the game size        
+                game.camera.bounds.setTo(112, 84, 800, 600);    
+            }   
+            game.physics.setBoundsToWorld();
+            game.add.sprite(-112, -84, 'village');
+            
 
-            var sprites = game.add.group();
-            sprites.enableBody = true;
-            sprites.physicsBodyType = Phaser.Physics.ARCADE;
+            var sprites1 = game.add.group();
+            sprites1.enableBody = true;
+            sprites1.physicsBodyType = Phaser.Physics.ARCADE;
 
-            sprite = sprites.create(50, 80, 'logo');
-            sprite.body.collideWorldBounds = true;
-            sprite.x = 512;
-            sprite.y = 384;
-            sprite.anchor.setTo(0.5, 1);
-            sprite.maxHealth = 50;
-            sprite.health = 100;
+            sprite1 = sprites1.create(50, 80, 'npc');
+            sprite1.animations.add('walk');
+            sprite1.animations.play('walk', 5, true);
+            sprite1.body.collideWorldBounds = true;
+            sprite1.x = 512;
+            sprite1.y = 384;
+            sprite1.anchor.setTo(0.5, 0.5);
+            sprite1.maxHealth = 50;
+            sprite1.health = 100;
+
+            var sprites2 = game.add.group();
+            sprites2.enableBody = true;
+            sprites2.physicsBodyType = Phaser.Physics.ARCADE;
+
+            sprite2 = sprites2.create(50, 80, 'npc2');
+            sprite2.animations.add('walk');
+            sprite2.animations.play('walk', 5, true);
+            sprite2.body.collideWorldBounds = true;
+            sprite2.x = 512;
+            sprite2.y = 384;
+            sprite2.anchor.setTo(0.5, 0.5);
+            sprite2.maxHealth = 50;
+            sprite2.health = 100;
 
             game.physics.startSystem(Phaser.Physics.ARCADE);
-            game.physics.enable(sprite, Phaser.Physics.ARCADE);
+            
+            game.physics.enable(sprite1, Phaser.Physics.ARCADE);
+            game.physics.enable(sprite2, Phaser.Physics.ARCADE);
 
         	wKey = game.input.keyboard.addKey(Phaser.KeyCode.W);
         	sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
         	aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
         	dKey = game.input.keyboard.addKey(Phaser.KeyCode.D);
 
+            UKey = game.input.keyboard.addKey(Phaser.KeyCode.UP);
+            DKey = game.input.keyboard.addKey(Phaser.KeyCode.DOWN);
+            LKey = game.input.keyboard.addKey(Phaser.KeyCode.LEFT);
+            RKey = game.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
+
         }
 
         function update(){
 
-        	sprite.body.velocity.x = 0;
-    		sprite.body.velocity.y = 0;
+        	sprite1.body.velocity.x = 0;
+    		sprite1.body.velocity.y = 0;
 
-    		game.world.wrap(sprite, 0, true);
+            sprite2.body.velocity.x = 0;
+            sprite2.body.velocity.y = 0;
+
+    		game.world.wrap(sprite1, 0, true);
+            game.world.wrap(sprite2, 0, true);
+
+            var speed = 250;
 
         	if (wKey.isDown){
 		        // console.log('w');
-		        sprite.body.velocity.y = -500;
-                sprite.damage(1);
-                console.log(sprite.health);
+		        sprite1.body.velocity.y = -(speed);
+                // sprite1.damage(1);
+                // console.log(sprite1.health);
 		    }
 		    if (sKey.isDown){
 		        // console.log('s');
-		        sprite.body.velocity.y = 500;
-                sprite.heal(1);
-                console.log(sprite.health);
+		        sprite1.body.velocity.y = (speed);
+                // sprite1.heal(1);
+                // console.log(sprite1.health);
 		    }
 		    if (aKey.isDown){
 		        // console.log('a');
-		        sprite.body.velocity.x = -500;
+		        sprite1.body.velocity.x = -(speed);
 		    }
 		    if (dKey.isDown){
 		        // console.log('d');
-		        sprite.body.velocity.x = 500;
+		        sprite1.body.velocity.x = (speed);
 		    }
 
-            if(sprite.health === 0){
-                $('.play').css('display', 'none');
-                $('.loser').css('display', 'block');
-                $('.intro, .loser').animate({
-                    opacity: 1
-                }, 1000);
+            if (UKey.isDown){
+                // console.log('w');
+                sprite2.body.velocity.y = -(speed);
+                // sprite1.damage(1);
+                // console.log(sprite1.health);
+            }
+            if (DKey.isDown){
+                // console.log('s');
+                sprite2.body.velocity.y = (speed);
+                // sprite1.heal(1);
+                // console.log(sprite1.health);
+            }
+            if (LKey.isDown){
+                // console.log('a');
+                sprite2.body.velocity.x = -(speed);
+            }
+            if (RKey.isDown){
+                // console.log('d');
+                sprite2.body.velocity.x = (speed);
             }
 
-            // if (checkOverlap(sprite, graphics))
-            // {
-            //     game.stage.backgroundColor = "#4488AA";
-            // }
-            // else
-            // {
-            //     game.stage.backgroundColor = "#000000";
+            game.physics.arcade.collide(sprite1, sprite2, collisionHandler, null, this);
+
+            // if(sprite1.health === 0){
+            //     $('.play').css('display', 'none');
+            //     $('.loser').css('display', 'block');
+            //     $('.intro, .loser').animate({
+            //         opacity: 1
+            //     }, 1000);
             // }
 
 
         }
 
-        // function checkOverlap(sprite, graphics) {
+        function collisionHandler (obj1, obj2) {
 
-        //     var boundsA = sprite.getBounds();
+            game.stage.backgroundColor = '#992d2d';
+
+        }
+
+        // function checkOverlap(sprite1, graphics) {
+
+        //     var boundsA = sprite1.getBounds();
         //     var boundsB = graphics.getBounds();
 
         //     return Phaser.Rectangle.intersects(boundsA, boundsB);
@@ -232,8 +293,10 @@
         function render () {
 
             // game.debug.inputInfo(32, 32);
-            game.debug.spriteInfo(sprite, 32, 32);
-            game.debug.bodyInfo(sprite, 32, 128);
+            // game.debug.spriteInfo(sprite2, 32, 32);
+            // game.debug.bodyInfo(sprite2, 32, 128);
+            // game.debug.spriteInfo(sprite1, 32, 256);
+            // game.debug.bodyInfo(sprite1, 32, 384);
 
         }
 
