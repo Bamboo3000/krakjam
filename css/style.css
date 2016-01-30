@@ -1,0 +1,48 @@
+body,
+html{
+    margin:0;
+    padding:0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: black;
+    text-align: center;
+}
+img{
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+canvas{
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    border: 2px solid white;
+    opacity:0;
+    max-width: 1024px;
+    max-height: 768px;
+    width: auto;
+    height: auto;
+}
+.intro{
+    position: absolute;
+    text-align: center;
+    display: block;
+    width: 100%;
+    z-index: 99999;
+    opacity: 0;
+}
+.play,
+.loser{
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    margin-left: -100px; 
+    width: 200px;
+    height: 60px;
+}
+.loser{
+    display: none;
+    opacity: 0;
+}
