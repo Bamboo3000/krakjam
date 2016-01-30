@@ -8,47 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="phaser/build/phaser.min.js"></script>  
     <script src="src/NPC.js"></script>
-    <style>
-        body,
-        html{
-            margin:0;
-            padding:0;
-            display: block;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background: black;
-            text-align: center;
-        }
-        canvas{
-            margin: 0 auto;
-            display: block;
-            position: relative;
-            border: 2px solid white;
-            opacity:0;
-        }
-        .intro{
-            position: absolute;
-            text-align: center;
-            display: block;
-            width: 100%;
-            z-index: 99999;
-            opacity: 0;
-        }
-        .play,
-        .loser{
-            position: absolute;
-            top: 75%;
-            left: 50%;
-            margin-left: -100px; 
-            width: 200px;
-            height: 60px;
-        }
-        .loser{
-            display: none;
-            opacity: 0;
-        }
-    </style>
+    
 </head>
 <body>
 <button id="view-fullscreen">full</button>
@@ -150,7 +110,7 @@
         var NPCprobability = 0.55;
         var placeShifts = [];
         var currentNPCs;
-        var NPCscattering = 50;
+        var NPCscattering = 100;
         var currentShape = circle;
         var aims = [];
         var NPCarray = []
@@ -209,10 +169,24 @@
             NPC.body.velocity.x = 100;
             NPC.body.velocity.y = 100;
             NPC.animations.add('walk', [0, 1], 10, true);
+            NPC.inputEnabled = true;
+            NPC.events.onInputDown.add(NPClistener, this);
             NPC.dead = false;
+            
             return NPC;
         }
  
+
+        function NPClistener(){
+            debug.log('npc clicked');
+        }
+        function player1listener(){
+            debug.log('player1 clicked');
+        }
+        function player2listener(){
+            debug.log('player2 clicked');
+        }
+
         function generateShifts(){
             var smallestDistance = Math.PI*2/totalShifts*1000;
             for(var i=0; i<totalShifts; i++){
@@ -236,6 +210,8 @@
                 NPChp[i] = 300;
             }
         }
+
+
 
         function create () {
             
@@ -272,6 +248,9 @@
             sprites1.physicsBodyType = Phaser.Physics.ARCADE;
 
             sprite1 = sprites1.create(50, 80, 'npc');
+            sprite1.inputEnabled = true;
+            sprite1.events.onInputDown.add(player1listener, this);
+            
             sprite1.animations.add('walk');
             sprite1.animations.play('walk', 5, true);
             sprite1.body.collideWorldBounds = true;
@@ -284,8 +263,12 @@
             var sprites2 = game.add.group();
             sprites2.enableBody = true;
             sprites2.physicsBodyType = Phaser.Physics.ARCADE;
+            
 
             sprite2 = sprites2.create(50, 80, 'npc2');
+            
+            sprite2.events.onInputDown.add(player2listener, this);
+            sprite2.inputEnabled = true;
             sprite2.animations.add('walk');
             sprite2.animations.play('walk', 5, true);
             sprite2.body.collideWorldBounds = true;
@@ -312,6 +295,7 @@
 
             generateShifts();
             resetNPCs();
+            //timer.stop();
         }
 
 
@@ -344,7 +328,7 @@
                     NPChp[i]--;
                 if(NPChp[i]<0){
                     NPCarray[i].dead = true;
-                    console.log("banished!");
+                    //console.log("banished!");
                 }
             }
 
@@ -428,7 +412,7 @@
 
         function render () {
 
-            // game.debug.inputInfo(32, 32);
+             game.debug.inputInfo(32, 32);
             // game.debug.spriteInfo(sprite2, 32, 32);
             // game.debug.bodyInfo(sprite2, 32, 128);
             // game.debug.spriteInfo(sprite1, 32, 256);
