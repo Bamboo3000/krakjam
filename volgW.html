@@ -184,6 +184,7 @@
 
 
         function updateNPC(NPC){
+            console.log('asd')
             var pos;
             if(!NPC.dead)
                 pos = currentShape(timer.ms+NPC.shift);
@@ -198,6 +199,23 @@
             var distance = game.physics.arcade.distanceBetween(NPC, aimObject);
 
             game.physics.arcade.moveToObject(NPC,aimObject , speed*Math.atan(distance/10));
+
+            var fire = new Phaser.Point(screenWidth/2+250, screenHeight/2-50);
+            dir = Phaser.Point.subtract(vecFrom, fire);
+            axis = new Phaser.Point(-1,-1);
+            var angle2 = Phaser.Point.angle(axis, dir);
+            angle2 = angle2/Math.PI*360;
+            console.log(angle2);
+            if(angle2<35&&angle2>-35)
+                NPC.animations.play('walkW');
+            if(angle2 >35&&angle2 <135)
+                NPC.animations.play('walkN');
+            if(angle2 >135 && angle2 <180)
+                NPC.animations.play('walkE');
+            if(angle2 >-180 && angle2 < -135)
+                NPC.animations.play('walkE');
+            if(angle2 < -35 && angle2 > -135)
+                NPC.animations.play('walkS');
            
             aimObject.destroy();
         }
@@ -222,7 +240,10 @@
             NPC.body.bounce.setTo(1, 1);
             NPC.body.velocity.x = 100;
             NPC.body.velocity.y = 100;
-            NPC.animations.add('walk', [0, 1], 10, true);
+            NPC.animations.add('walkN', [0, 1,2,3], 10, true);
+            NPC.animations.add('walkS', [4, 5,6,7], 10, true);
+            NPC.animations.add('walkW', [8, 9,10,11], 10, true);
+            NPC.animations.add('walkE', [12, 13,14,15], 10, true);
             NPC.inputEnabled = true;
             NPC.events.onInputDown.add(NPClistener, this);
             NPC.dead = false;
@@ -407,7 +428,16 @@
                     var randX = (Math.random()-0.5)*screenWidth+screenWidth/2;
                     var randY = (Math.random()-0.5)*screenHeight+screenHeight/2;
                     //console.log(randX);
-                    NPCarray[currentNPCs] = makeNPC(randX, randY, currentShape, placeShifts[i], 'npc', currentNPCs);
+
+                    var spriteType;
+                    var r = Math.random();
+                    if(r<0.33)
+                        spriteType = 'npc2';
+                    else if(r<0.66)
+                        spriteType = 'npc';
+                    else 
+                        spriteType = 'npc3';
+                    NPCarray[currentNPCs] = makeNPC(randX, randY, currentShape, placeShifts[i], spriteType, currentNPCs);
                     //console.log(NPCarray[currentNPCs].body.x);
                     NPCarray[currentNPCs].animations.play('walk');
                     currentNPCs++;
