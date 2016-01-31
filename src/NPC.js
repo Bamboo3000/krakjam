@@ -38,8 +38,14 @@ function circleStuttered(t){
     return circle(saw(t)+t);
 }
 
+
+function lissajous(t){
+    t  = t/2000;
+    return [Math.sin(1*t)*gameWidth/2+screenWidth/2, Math.cos(3*t)*gameHeight/2+screenHeight/2]
+}
+
 function square(t){
-    var period = 5000;
+    var period = 2000;
     t%=4*period;
     var phase = t%period;
     phase/=period;

@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="phaser/build/phaser.min.js"></script>  
     <script src="src/NPC.js"></script>
-    
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <button id="view-fullscreen">full</button>
@@ -80,7 +80,9 @@
                 $('.play').on('click touchstart', function(){
                     $('.intro').animate({
                         opacity: 0
-                    }, 1000);
+                    }, 1000, function(){
+                         $('.intro').css('display', 'none');
+                    });
                     $('canvas').animate({
                         opacity: 1 
                     }, 1000);
@@ -107,16 +109,22 @@
         var totalShifts = 40;
         var acceptedRadius = 50;
         var playerSpeed = 200;
-        var NPCprobability = 0.55;
+        var NPCprobability = 0.75;
         var placeShifts = [];
         var currentNPCs;
-        var NPCscattering = 100;
+        var NPCscattering = 150;
         var currentShape = circle;
         var aims = [];
         var NPCarray = []
         var timer;
         var scatteringArray = [];
         var NPChp = [];
+        var pause = true;
+        var sprites;
+        var turn;
+        var score1;
+        var score2;
+
         // var rect;
         // var graphics;
 
@@ -158,7 +166,7 @@
 
         function makeNPC(posX, posY, formation, shift, spriteName, number){
             var NPC;
-            NPC = game.add.sprite(posX, posY, spriteName);
+            NPC = sprites.create(posX, posY, spriteName);
             NPC.update = formation;
             NPC.shift = shift;
             NPC.number = number;
@@ -176,15 +184,47 @@
             return NPC;
         }
  
+        function newGame(){
+
+            resetNPCs();
+            var r = game.rnd.integerInRange(0, 3);
+            if(r===0){
+                currentShape = lissajous;
+                NPCscattering = 150;
+            }
+            if(r===1){
+                currentShape = square;
+                NPCscattering = 150;
+            }
+            if(r===2){
+                currentShape = circle;
+                NPCscattering = 150;
+            }
+            if(r===3){
+                currentShape = circle;
+                NPCscattering = 40;
+            }
+            pause = false;
+        }
 
         function NPClistener(){
-            debug.log('npc clicked');
+            if(turn===1){
+                score2 ++;
+            }else{
+                score1 ++;
+            }
+            newGame();
+            console.log('npc clicked');
         }
         function player1listener(){
-            debug.log('player1 clicked');
+            score2++;
+            newGame();
+            console.log('player1 clicked');
         }
         function player2listener(){
-            debug.log('player2 clicked');
+            score1++;
+            newGame();
+            console.log('player2 clicked');
         }
 
         function generateShifts(){
@@ -195,11 +235,23 @@
         }
 
         function resetNPCs(){
+
+            for(var i= 0; i<currentNPCs; i++)
+                if(NPCarray[i]!=null)
+                        NPCarray[i].destroy();
             currentNPCs = 0;
+            
+
             for (var i = 0; i < totalShifts; i++){
+
                 var r = Math.random();
                 if(r<NPCprobability){
-                    NPCarray[currentNPCs] = makeNPC((Math.random()-0.5)*screenWidth+screenWidth/2, (Math.random()-0.5)*screenHeight+screenHeight/2, currentShape, placeShifts[i], 'npc', currentNPCs);
+                    
+                    var randX = (Math.random()-0.5)*screenWidth+screenWidth/2;
+                    var randY = (Math.random()-0.5)*screenHeight+screenHeight/2;
+                    //console.log(randX);
+                    NPCarray[currentNPCs] = makeNPC(randX, randY, currentShape, placeShifts[i], 'npc', currentNPCs);
+                    //console.log(NPCarray[currentNPCs].body.x);
                     NPCarray[currentNPCs].animations.play('walk');
                     currentNPCs++;
                 }
@@ -211,14 +263,17 @@
             }
         }
 
-
+        $(".play").on("click",function(){
+            pause = false;
+        }); 
 
         function create () {
             
-
-
+            score1 = 0;
+            score2 = 0;
             timer = game.time.create(false);
             timer.start();
+
             // var rects = game.add.group();
             // rects.enableBody = true;
             // rects.physicsBodyType = Phaser.Physics.ARCADE;
@@ -235,46 +290,40 @@
 
 
 
-            game.world.bounds.setTo(0, 0, 800, 600);    
-            if (game.camera.bounds){        //  The Camera can never be smaller than the game size        
-                game.camera.bounds.setTo(112, 84, 800, 600);    
-            }   
+            
             game.physics.setBoundsToWorld();
-            game.add.sprite(-112, -84, 'village');
+            game.add.sprite(0, 0, 'village');
             
 
-            var sprites1 = game.add.group();
-            sprites1.enableBody = true;
-            sprites1.physicsBodyType = Phaser.Physics.ARCADE;
+            sprites = game.add.group();
+            sprites.enableBody = true;
+            sprites.physicsBodyType = Phaser.Physics.ARCADE;
 
-            sprite1 = sprites1.create(50, 80, 'npc');
+            sprite1 = sprites.create(50, 80, 'npc');
             sprite1.inputEnabled = true;
             sprite1.events.onInputDown.add(player1listener, this);
             
             sprite1.animations.add('walk');
             sprite1.animations.play('walk', 5, true);
             sprite1.body.collideWorldBounds = true;
-            sprite1.x = 512;
-            sprite1.y = 384;
-            sprite1.anchor.setTo(0.5, 0.5);
+            sprite1.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
+            sprite1.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
+
+            //sprite1.anchor.setTo(0.5, 0.5);
             sprite1.maxHealth = 50;
             sprite1.health = 100;
 
-            var sprites2 = game.add.group();
-            sprites2.enableBody = true;
-            sprites2.physicsBodyType = Phaser.Physics.ARCADE;
-            
-
-            sprite2 = sprites2.create(50, 80, 'npc2');
+         
+            sprite2 = sprites.create(50, 80, 'npc');
             
             sprite2.events.onInputDown.add(player2listener, this);
             sprite2.inputEnabled = true;
             sprite2.animations.add('walk');
             sprite2.animations.play('walk', 5, true);
             sprite2.body.collideWorldBounds = true;
-            sprite2.x = 512;
-            sprite2.y = 384;
-            sprite2.anchor.setTo(0.5, 0.5);
+            sprite2.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
+            sprite2.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
+            //sprite2.anchor.setTo(0.5, 0.5);
             sprite2.maxHealth = 50;
             sprite2.health = 100;
 
@@ -287,14 +336,17 @@
         	sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
         	aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
         	dKey = game.input.keyboard.addKey(Phaser.KeyCode.D);
+            pKey = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
             UKey = game.input.keyboard.addKey(Phaser.KeyCode.UP);
             DKey = game.input.keyboard.addKey(Phaser.KeyCode.DOWN);
             LKey = game.input.keyboard.addKey(Phaser.KeyCode.LEFT);
             RKey = game.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
+            PKey = game.input.keyboard.addKey(Phaser.KeyCode.ENTER);
 
             generateShifts();
             resetNPCs();
+
             //timer.stop();
         }
 
@@ -311,7 +363,27 @@
             }
             return false;
         }
+
+        function togglePause() {
+            game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+        }
+
         function update(){
+
+
+
+            if(pause){
+                
+                 for (var i = 0; i < currentNPCs; i++){
+                    NPCarray[i].body.velocity.x = 0;
+                    NPCarray[i].body.velocity.y = 0;
+                    sprite1.body.velocity.x = 0;
+                    sprite1.body.velocity.y = 0;
+                    sprite2.body.velocity.x = 0;
+                    sprite2.body.velocity.y = 0;
+                 }
+                 return;
+            }
 
         	sprite1.body.velocity.x = 0;
     		sprite1.body.velocity.y = 0;
@@ -327,7 +399,7 @@
                 if(!checkPlayerPosition(NPCarray[i]))
                     NPChp[i]--;
                 if(NPChp[i]<0){
-                    NPCarray[i].dead = true;
+                    //NPCarray[i].dead = true;
                     //console.log("banished!");
                 }
             }
@@ -361,6 +433,11 @@
 		        sprite1.body.velocity.x = (playerSpeed);
 		    }
 
+            if (pKey.isDown){
+                pause = true;
+                turn = 1;
+            }
+
             if (UKey.isDown){
                 // console.log('w');
                 sprite2.body.velocity.y = -(speed);
@@ -382,6 +459,11 @@
                 sprite2.body.velocity.x = (speed);
             }
 
+            if (PKey.isDown){
+                turn = 2;
+                pause = true;
+            }
+            sprites.sort('y', Phaser.Group.SORT_ASCENDING);
             game.physics.arcade.collide(sprite1, sprite2, collisionHandler, null, this);
 
             // if(sprite1.health === 0){
