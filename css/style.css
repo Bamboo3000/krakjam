@@ -15,12 +15,18 @@ img{
     vertical-align: middle;
 }
 canvas{
+<<<<<<< HEAD
     left: 50%;
     top:50%;
     margin-left: -512px;
     margin-top: -384px;
     display: block;
     position: absolute;
+=======
+    margin: 0 auto;
+    display: block;
+    position: relative;
+>>>>>>> origin/master
     border: 2px solid white;
     opacity:0;
     max-width: 1024px;
@@ -35,24 +41,39 @@ canvas{
     width: 100%;
     z-index: 99999;
     opacity: 0;
+<<<<<<< HEAD
     top:50%;
     margin-top: -384px;
+=======
+>>>>>>> origin/master
 }
 .play,
 .loser{
     position: absolute;
+<<<<<<< HEAD
     top: 73%;
     left: 50%;
     margin-left: -122px; 
     width: 244px;
     height: 81px;
     cursor: pointer;
+=======
+    top: 75%;
+    left: 50%;
+    margin-left: -100px; 
+    width: 200px;
+    height: 60px;
+>>>>>>> origin/master
 }
 .loser{
     display: none;
     opacity: 0;
+<<<<<<< HEAD
 }
 
 
 
 
+=======
+}
+>>>>>>> origin/master

@@ -4,26 +4,20 @@
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width">
 	<title>Volg!</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<<<<<<< HEAD
-	<script src="phaser/build/phaser.min.js"></script>
-=======
 	<script src="phaser/build/phaser.min.js"></script>  
     <script src="src/NPC.js"></script>
->>>>>>> origin/master
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<!-- <button id="view-fullscreen">full</button>
-<button id="cancel-fullscreen">window</button> -->
+<button id="view-fullscreen">full</button>
+<button id="cancel-fullscreen">window</button>
 <div class="intro">
     <img src="img/intro.jpg" alt="">
-    <div class="play"><img src="img/play.png" alt=""></div>
+    <button class="play">PLAY</button>
     <h1 class="loser">LOSER!</h1>
 </div>
-
 <script type="text/javascript">
 
 (function () {
@@ -71,22 +65,14 @@
 
     window.onload = function() {
 
-        game = new Phaser.Game(1024, 768, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
+        var game = new Phaser.Game(1024, 768, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
         function preload () {
 
-            game.stage.backgroundColor = '#262425';
-
+            // game.load.image('logo', 'ludek.jpg');
             game.load.image('village', 'img/village.jpg');
-            game.load.image('chata1', 'img/chata1.jpg');
-            game.load.image('chata2', 'img/chata2.jpg');
-            game.load.image('chata3', 'img/chata3.jpg');
-            game.load.image('chata4', 'img/chata4.jpg');
-            game.load.image('studnia', 'img/studnia.jpg');
-            game.load.spritesheet('fire', 'img/fire.png', 50, 50, 2);
             game.load.spritesheet('npc', 'img/npc.png', 50, 80, 2);
             game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 2);
-            game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 4);
 
             $('.intro').animate({
                 opacity: 1
@@ -105,31 +91,15 @@
 
         }
 
+        // function circle(t){
+        //     t = t/1000;
+        //     return[Math.sin(t)*gameWidth/2+screenWidth/2, Math.cos(t)*gameHeight/2+screenHeight/2];
+        // }
 
         var sprites1;
         var sprite1;
         var sprites2;
         var sprite2;
-<<<<<<< HEAD
-        var sprites3;
-        var sprite3;
-        var fires;
-        var fire;
-        var stidnias;
-        var studnia;
-        var chata1s;
-        var chata1;
-        var chata2s;
-        var chata2;
-        var chata3s;
-        var chata3;
-        var chata4s;
-        var chata4;
-        var score1 = 0;
-        var scoreText1;
-        var score2 = 0;
-        var scoreText2;
-=======
         gameWidth = 600;
         gameHeight = 400;
         screenWidth = 1024;
@@ -157,7 +127,6 @@
 
         // var rect;
         // var graphics;
->>>>>>> origin/master
 
 
         
@@ -305,14 +274,14 @@
             timer = game.time.create(false);
             timer.start();
 
-            scoreText1 = game.add.text(32, 32, 'Player 1: 0', { fontSize: '21px', fill: '#fff' });
-            scoreText2 = game.add.text(740, 32, 'Player 2: 0', { fontSize: '21px', fill: '#fff' });
+            // var rects = game.add.group();
+            // rects.enableBody = true;
+            // rects.physicsBodyType = Phaser.Physics.ARCADE;
 
+            // rect = rects.create(500, 500, null);
+            // rect.body.collideWorldBounds = true;
+            // rect.body.setSize(50, 50, 0, 0);
 
-<<<<<<< HEAD
-            game.physics.setBoundsToWorld();
-            // game.add.sprite(0, 0, 'village'); 
-=======
             // graphics = game.add.graphics(game.world.centerX, game.world.centerY);
             // graphics.lineStyle(8, 0xffd900);
             // graphics.drawCircle(0, 0, 300);
@@ -324,57 +293,7 @@
             
             game.physics.setBoundsToWorld();
             game.add.sprite(0, 0, 'village');
->>>>>>> origin/master
             
-            var studnias = game.add.group();
-            studnias.enableBody = true;
-            studnias.physicsBodyType = Phaser.Physics.ARCADE;
-            studnia = studnias.create(88, 81, 'studnia');
-            studnia.x = 891;
-            studnia.y = 420;
-            studnia.anchor.setTo(0.5, 0.5);
-
-            var chata1s = game.add.group();
-            chata1s.enableBody = true;
-            chata1s.physicsBodyType = Phaser.Physics.ARCADE;
-            chata1 = chata1s.create(220, 275, 'chata1');
-            chata1.x = 1024;
-            chata1.y = 768;
-            chata1.anchor.setTo(1, 1);
-
-            var chata2s = game.add.group();
-            chata2s.enableBody = true;
-            chata2s.physicsBodyType = Phaser.Physics.ARCADE;
-            chata2 = chata2s.create(132, 130, 'chata2');
-            chata2.x = 1024;
-            chata2.y = 0;
-            chata2.anchor.setTo(1, 0);
-
-            var chata3s = game.add.group();
-            chata3s.enableBody = true;
-            chata3s.physicsBodyType = Phaser.Physics.ARCADE;
-            chata3 = chata3s.create(220, 206, 'chata3');
-            chata3.x = 105;
-            chata3.y = 250;
-            chata3.anchor.setTo(0.5, 0.5);
-
-            var chata4s = game.add.group();
-            chata4s.enableBody = true;
-            chata4s.physicsBodyType = Phaser.Physics.ARCADE;
-            chata4 = chata4s.create(202, 214, 'chata4');
-            chata4.x = 0;
-            chata4.y = 750;
-            chata4.anchor.setTo(0, 1);
-
-            var fires = game.add.group();
-            fires.enableBody = true;
-            fires.physicsBodyType = Phaser.Physics.ARCADE;
-            fire = fires.create(50, 50, 'fire');
-            fire.animations.add('fire');
-            fire.animations.play('fire', 5, true);
-            fire.x = 512;
-            fire.y = 384;
-            fire.anchor.setTo(0.5, 0.5);
 
             sprites = game.add.group();
             sprites.enableBody = true;
@@ -387,18 +306,11 @@
             sprite1.animations.add('walk');
             sprite1.animations.play('walk', 5, true);
             sprite1.body.collideWorldBounds = true;
-<<<<<<< HEAD
-            sprite1.x = 512;
-            sprite1.y = 384;
-            sprite1.anchor.setTo(0.5, 0.5);
-            sprite1.maxHealth = 100;
-=======
             sprite1.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
             sprite1.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
 
             //sprite1.anchor.setTo(0.5, 0.5);
             sprite1.maxHealth = 50;
->>>>>>> origin/master
             sprite1.health = 100;
 
          
@@ -409,64 +321,31 @@
             sprite2.animations.add('walk');
             sprite2.animations.play('walk', 5, true);
             sprite2.body.collideWorldBounds = true;
-<<<<<<< HEAD
-            sprite2.x = 512;
-            sprite2.y = 384;
-            sprite2.anchor.setTo(0.5, 0.5);
-            sprite2.maxHealth = 100;
-=======
             sprite2.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
             sprite2.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
             //sprite2.anchor.setTo(0.5, 0.5);
             sprite2.maxHealth = 50;
->>>>>>> origin/master
             sprite2.health = 100;
-
-            var sprites3 = game.add.group();
-            sprites3.enableBody = true;
-            sprites3.physicsBodyType = Phaser.Physics.ARCADE;
-
-            sprite3 = sprites3.create(50, 80, 'npc3');
-            sprite3.animations.add('walk');
-            sprite3.animations.play('walk', 5, true);
-            sprite3.body.collideWorldBounds = true;
-            sprite3.x = 300;
-            sprite3.y = 300;
-            sprite3.anchor.setTo(0.5, 0.5);
-            sprite3.maxHealth = 100;
-            sprite3.health = 100;
 
             game.physics.startSystem(Phaser.Physics.ARCADE);
             
             game.physics.enable(sprite1, Phaser.Physics.ARCADE);
             game.physics.enable(sprite2, Phaser.Physics.ARCADE);
-            game.physics.enable(sprite3, Phaser.Physics.ARCADE);
 
         	wKey = game.input.keyboard.addKey(Phaser.KeyCode.W);
         	sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
         	aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
         	dKey = game.input.keyboard.addKey(Phaser.KeyCode.D);
-<<<<<<< HEAD
-            // qKey = game.input.keyboard.addKey(Phaser.KeyCode.Q);
-            // eKey = game.input.keyboard.addKey(Phaser.KeyCode.E);
-            // cKey = game.input.keyboard.addKey(Phaser.KeyCode.C);
-            // zKey = game.input.keyboard.addKey(Phaser.KeyCode.Z);
-=======
             pKey = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
->>>>>>> origin/master
 
             UKey = game.input.keyboard.addKey(Phaser.KeyCode.UP);
             DKey = game.input.keyboard.addKey(Phaser.KeyCode.DOWN);
             LKey = game.input.keyboard.addKey(Phaser.KeyCode.LEFT);
-<<<<<<< HEAD
-            RKey = game.input.keyboard.addKey(Phaser.KeyCode.RIGHT);  
-=======
             RKey = game.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
             PKey = game.input.keyboard.addKey(Phaser.KeyCode.ENTER);
 
             generateShifts();
             resetNPCs();
->>>>>>> origin/master
 
             //timer.stop();
         }
@@ -515,65 +394,6 @@
     		game.world.wrap(sprite1, 0, true);
             game.world.wrap(sprite2, 0, true);
 
-<<<<<<< HEAD
-            var speed = 300;
-
-        	if (wKey.isDown){
-		        if(aKey.isDown){
-                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-                } 
-                else if (dKey.isDown){
-                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                // else if (qKey.isDown){
-                //     sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-                //     sprite1.body.velocity.x = -(speed/4);
-                // }
-                else {
-                    sprite1.body.velocity.y = -(speed);
-                }
-		    }
-		    else if (sKey.isDown){
-                if(aKey.isDown){
-                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-                } 
-                else if (dKey.isDown){
-                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                else {
-                    sprite1.body.velocity.y = (speed);
-                }
-		    }
-		    else if (aKey.isDown){
-                if(wKey.isDown){
-                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-                } 
-                else if (sKey.isDown){
-                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-                }
-                else {
-                    sprite1.body.velocity.x = -(speed);
-                }
-		    }
-		    else if (dKey.isDown){
-                if(wKey.isDown){
-                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
-                } 
-                else if (sKey.isDown){
-                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                else {
-                    sprite1.body.velocity.x = (speed);
-                }
-=======
             
             for (var i = 0; i < currentNPCs; i++){
                 if(!checkPlayerPosition(NPCarray[i]))
@@ -611,24 +431,7 @@
 		    if (dKey.isDown){
 		        // console.log('d');
 		        sprite1.body.velocity.x = (playerSpeed);
->>>>>>> origin/master
 		    }
-            // else if (qKey.isDown){
-            //     if(wKey.isDown){
-            //         sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-            //         sprite1.body.velocity.x = -(speed/4);
-            //     } 
-            //     else if (aKey.isDown){
-            //         sprite1.body.velocity.y = -(speed/2);
-            //         sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-            //     }
-            //     else {
-            //         sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-            //         sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-            //     }
-            // }
-
-
 
             if (pKey.isDown){
                 pause = true;
@@ -636,68 +439,32 @@
             }
 
             if (UKey.isDown){
-                if(LKey.isDown){
-                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
-                }
-                else if(RKey.isDown){
-                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                else{
-                    sprite2.body.velocity.y = -(speed);
-                }
+                // console.log('w');
+                sprite2.body.velocity.y = -(speed);
+                // sprite1.damage(1);
+                // console.log(sprite1.health);
             }
-            else if (DKey.isDown){
-                if(LKey.isDown){
-                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
-                }
-                else if(RKey.isDown){
-                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                else{
-                    sprite2.body.velocity.y = (speed);
-                }
+            if (DKey.isDown){
+                // console.log('s');
+                sprite2.body.velocity.y = (speed);
+                // sprite1.heal(1);
+                // console.log(sprite1.health);
             }
-            else if (LKey.isDown){
-                if(UKey.isDown){
-                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
-                }
-                else if(DKey.isDown){
-                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
-                }
-                else{
-                    sprite2.body.velocity.x = -(speed);
-                }
+            if (LKey.isDown){
+                // console.log('a');
+                sprite2.body.velocity.x = -(speed);
             }
-            else if (RKey.isDown){
-                if(UKey.isDown){
-                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                else if(DKey.isDown){
-                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
-                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
-                }
-                else{
-                    sprite2.body.velocity.x = (speed);
-                }
+            if (RKey.isDown){
+                // console.log('d');
+                sprite2.body.velocity.x = (speed);
             }
 
-<<<<<<< HEAD
-            game.physics.arcade.collide(sprite1, sprite2, null, null, this);
-=======
             if (PKey.isDown){
                 turn = 2;
                 pause = true;
             }
             sprites.sort('y', Phaser.Group.SORT_ASCENDING);
             game.physics.arcade.collide(sprite1, sprite2, collisionHandler, null, this);
->>>>>>> origin/master
 
             // if(sprite1.health === 0){
             //     $('.play').css('display', 'none');
@@ -709,6 +476,21 @@
 
 
         }
+
+        function collisionHandler (obj1, obj2) {
+
+            game.stage.backgroundColor = '#992d2d';
+
+        }
+
+        // function checkOverlap(sprite1, graphics) {
+
+        //     var boundsA = sprite1.getBounds();
+        //     var boundsB = graphics.getBounds();
+
+        //     return Phaser.Rectangle.intersects(boundsA, boundsB);
+
+        // }
 
         function render () {
 
