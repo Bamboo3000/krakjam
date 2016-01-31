@@ -11,13 +11,14 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<button id="view-fullscreen">full</button>
-<button id="cancel-fullscreen">window</button>
+<!-- <button id="view-fullscreen">full</button>
+<button id="cancel-fullscreen">window</button> -->
 <div class="intro">
     <img src="img/intro.jpg" alt="">
-    <button class="play">PLAY</button>
+    <div class="play"><img src="img/play.png" alt=""></div>
     <h1 class="loser">LOSER!</h1>
 </div>
+
 <script type="text/javascript">
 
 (function () {
@@ -69,10 +70,18 @@
 
         function preload () {
 
-            // game.load.image('logo', 'ludek.jpg');
+            game.stage.backgroundColor = '#262425';
+
             game.load.image('village', 'img/village.jpg');
+            game.load.image('chata1', 'img/chata1.jpg');
+            game.load.image('chata2', 'img/chata2.jpg');
+            game.load.image('chata3', 'img/chata3.jpg');
+            game.load.image('chata4', 'img/chata4.jpg');
+            game.load.image('studnia', 'img/studnia.jpg');
+            game.load.spritesheet('fire', 'img/fire.png', 50, 50, 2);
             game.load.spritesheet('npc', 'img/npc.png', 50, 80, 2);
             game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 2);
+            game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 4);
 
             $('.intro').animate({
                 opacity: 1
@@ -122,8 +131,10 @@
         var pause = true;
         var sprites;
         var turn;
-        var score1;
-        var score2;
+        var score1 = 0;
+        var scoreText1;
+        var score2 = 0;
+        var scoreText2;
 
         // var rect;
         // var graphics;
@@ -207,23 +218,59 @@
             pause = false;
         }
 
+        function player1Wins(){
+            game.add.text(32, 64, 'Player 1 WINS!', { fontSize: '21px', fill: '#fff' });
+            game.add.text(740, 64, 'Player 2 LOST!', { fontSize: '21px', fill: '#fff' });
+            pause = true;
+        }
+        function player2Wins(){
+            game.add.text(740, 64, 'Player 2 WINS!', { fontSize: '21px', fill: '#fff' });
+            game.add.text(32, 64, 'Player 1 LOST!', { fontSize: '21px', fill: '#fff' });
+            pause = true;
+        }
         function NPClistener(){
             if(turn===1){
-                score2 ++;
+                score2++;
+                scoreText2.text = 'Player 2: ' + score2;
             }else{
-                score1 ++;
+                score1++;
+                scoreText1.text = 'Player 1: ' + score1;
             }
-            newGame();
-            console.log('npc clicked');
+            if(score1 === 3){
+                player1Wins();
+            } else if(score2 === 3){
+                player2Wins();
+            } else{
+                newGame();
+            }
+            // newGame();
+            // console.log('npc clicked');
+            
         }
         function player1listener(){
             score2++;
-            newGame();
+            scoreText2.text = 'Player 2: ' + score2;
+            if(score1 === 3){
+                player1Wins();
+            } else if(score2 === 3){
+                player2Wins();
+            } else{
+                newGame();
+            }
+            // newGame();
             console.log('player1 clicked');
         }
         function player2listener(){
             score1++;
-            newGame();
+            scoreText1.text = 'Player 1: ' + score1;
+            if(score1 === 3){
+                player1Wins();
+            } else if(score2 === 3){
+                player2Wins();
+            } else{
+                newGame();
+            }
+            // newGame();
             console.log('player2 clicked');
         }
 
@@ -268,9 +315,11 @@
         }); 
 
         function create () {
+
             
-            score1 = 0;
-            score2 = 0;
+            
+            // score1 = 0;
+            // score2 = 0;
             timer = game.time.create(false);
             timer.start();
 
@@ -289,7 +338,7 @@
             // game.world.setBounds(0.5, 0.5, 800, 600);
 
 
-
+            
             
             game.physics.setBoundsToWorld();
             game.add.sprite(0, 0, 'village');
@@ -348,6 +397,9 @@
             resetNPCs();
 
             //timer.stop();
+
+            scoreText1 = game.add.text(32, 32, 'Player 1: 0', { fontSize: '21px', fill: '#fff' });
+            scoreText2 = game.add.text(740, 32, 'Player 2: 0', { fontSize: '21px', fill: '#fff' });
         }
 
 
@@ -494,7 +546,7 @@
 
         function render () {
 
-             game.debug.inputInfo(32, 32);
+             // game.debug.inputInfo(32, 32);
             // game.debug.spriteInfo(sprite2, 32, 32);
             // game.debug.bodyInfo(sprite2, 32, 128);
             // game.debug.spriteInfo(sprite1, 32, 256);
