@@ -78,9 +78,10 @@
             game.load.image('chata4', 'img/chata4.jpg');
             game.load.image('studnia', 'img/studnia.jpg');
             game.load.spritesheet('fire', 'img/fire.png', 50, 50, 2);
-            game.load.spritesheet('npc', 'img/npc.png', 50, 80, 2);
-            game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 2);
-            game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 4);
+            game.load.spritesheet('npc', 'img/npc.png', 50, 80, 16);
+            game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 16);
+            game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 16);
+
 
             $('.intro').animate({
                 opacity: 1
@@ -186,8 +187,21 @@
             sprites1.enableBody = true;
             sprites1.physicsBodyType = Phaser.Physics.ARCADE;
 
-            sprite1 = sprites1.create(50, 80, 'npc');
-            sprite1.animations.add('walk');
+
+            var spriteType;
+            var r = Math.random();
+            if(r<0.33)
+                spriteType = 'npc2';
+            else if(r<0.66)
+                spriteType = 'npc';
+            else 
+                spriteType = 'npc3';
+
+            sprite1 = sprites1.create(50, 80, spriteType);
+            sprite1.animations.add('walkN', [0, 1,2,3], 10, true);
+            sprite1.animations.add('walkS', [4, 5,6,7], 10, true);
+            sprite1.animations.add('walkW', [8, 9,10,11], 10, true);
+            sprite1.animations.add('walkE', [12, 13,14,15], 10, true);
             sprite1.animations.play('walk', 5, true);
             sprite1.body.collideWorldBounds = true;
             sprite1.x = 512;
@@ -200,7 +214,16 @@
             sprites2.enableBody = true;
             sprites2.physicsBodyType = Phaser.Physics.ARCADE;
 
-            sprite2 = sprites2.create(50, 80, 'npc2');
+
+             r = Math.random();
+            if(r<0.33)
+                spriteType = 'npc2';
+            else if(r<0.66)
+                spriteType = 'npc';
+            else 
+                spriteType = 'npc3';
+
+            sprite2 = sprites2.create(50, 80, spriteType);
             sprite2.animations.add('walk');
             sprite2.animations.play('walk', 5, true);
             sprite2.body.collideWorldBounds = true;
@@ -209,6 +232,11 @@
             sprite2.anchor.setTo(0.5, 0.5);
             sprite2.maxHealth = 100;
             sprite2.health = 100;
+
+            sprite2.animations.add('walkN', [0, 1,2,3], 10, true);
+            sprite2.animations.add('walkS', [4, 5,6,7], 10, true);
+            sprite2.animations.add('walkW', [8, 9,10,11], 10, true);
+            sprite2.animations.add('walkE', [12, 13,14,15], 10, true);
 
             var sprites3 = game.add.group();
             sprites3.enableBody = true;

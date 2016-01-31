@@ -55,10 +55,16 @@ window.onload = function() {
         game.load.spritesheet('kamien', 'img/kamien.png', 170, 64, 2);
         game.load.spritesheet('studnia', 'img/studnia.png', 98, 81, 2);
         game.load.spritesheet('fire', 'img/fire.png', 50, 50, 2);
+<<<<<<< HEAD
         game.load.spritesheet('npc', 'img/npc.png', 50, 80, 2);
         game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 2);
         game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 4);
         game.load.audio('drums', 'src/drums.mp3');
+=======
+        game.load.spritesheet('npc', 'img/npc.png', 50, 80, 16);
+        game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 16);
+        game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 16);
+>>>>>>> origin/master
 
         // $('.intro').css('display', 'block').find('> img').css('display', 'none');
         // $('.play').addClass('restart');
@@ -172,8 +178,57 @@ window.onload = function() {
         aimObject.visible = false;
         var distance = game.physics.arcade.distanceBetween(NPC, aimObject);
 
-        game.physics.arcade.moveToObject(NPC,aimObject , speed*Math.atan(distance/10));
+        //game.physics.arcade.moveToObject(NPC,aimObject , speed*Math.atan(distance/10));
        
+
+        var vecTo = new Phaser.Point(aimObject.x, aimObject.y);
+        var vecFrom = new Phaser.Point(NPC.x, NPC.y);
+        var dir = Phaser.Point.subtract(vecTo,vecFrom);
+        dir = dir.normalize();
+        var xAxis = new Phaser.Point(1, 0);
+        var angle = Phaser.Point.angle(xAxis, dir);
+        angle = angle/Math.PI*360;
+        console.log(angle);
+        if(angle<22.5&&angle>-22.5)
+            dir = new Phaser.Point(-1, 0);
+        else if(angle>180-22.5&&angle<180)
+            dir = new Phaser.Point(1, 0);
+        else if(angle<-180+22.5&&angle>-180)
+            dir =  new Phaser.Point(1, 0);
+        else if(angle<45+22.5&&angle>22.5)
+            dir = new Phaser.Point(-0.7, -0.7);
+        else if(angle>45+22.5&&angle<90+22.5)
+            dir = new Phaser.Point(0, -1);
+        else if(angle>135-22.5&&angle<135+22.5)
+            dir = new Phaser.Point(0.7, -0.7);
+        else if(angle>-180+22.5&&angle<-90-22.5)
+            dir = new Phaser.Point(0.7, 0.7);
+        else if(angle>-90-22.5&&angle<-90+22.5)
+            dir = new Phaser.Point(0, 1);
+        else dir = new Phaser.Point(-0.7, 0.7);
+
+        NPC.body.velocity.x = dir.x*speed*Math.atan(distance/10);
+        NPC.body.velocity.y = dir.y*speed*Math.atan(distance/10);
+
+
+        vecFrom = new Phaser.Point(NPC.x, NPC.y);
+        var fire = new Phaser.Point(screenWidth/2+270, screenHeight/2-80);
+        var dir = Phaser.Point.subtract(vecFrom, fire);
+        var axis = new Phaser.Point(1,0);
+        var angle2 = Phaser.Point.angle(axis, dir);
+        angle2 = angle2/Math.PI*360;
+        console.log(angle2);
+        if(angle2<35&&angle2>-35)
+            NPC.animations.play('walkW');
+        if(angle2 >35&&angle2 <145)
+            NPC.animations.play('walkN');
+        if(angle2 >145 && angle2 <180)
+            NPC.animations.play('walkE');
+        if(angle2 >-180 && angle2 < -145)
+            NPC.animations.play('walkE');
+        if(angle2 < -35 && angle2 > -145)
+            NPC.animations.play('walkS');
+
         aimObject.destroy();
     }
 
@@ -201,13 +256,51 @@ window.onload = function() {
         NPC.inputEnabled = true;
         NPC.events.onInputDown.add(NPClistener, this);
         NPC.dead = false;
-        
+        NPC.animations.add('walkN', [0, 1,2,3], 10, true);
+        NPC.animations.add('walkS', [4, 5,6,7], 10, true);
+        NPC.animations.add('walkW', [8, 9,10,11], 10, true);
+        NPC.animations.add('walkE', [12, 13,14,15], 10, true);
         return NPC;
     }
 
     function newGame(){
 
         resetNPCs();
+
+        var spriteType;
+        var r = Math.random();
+        if(r<0.33)
+            spriteType = 'npc2';
+        else if(r<0.66)
+            spriteType = 'npc';
+        else 
+            spriteType = 'npc3';
+        sprite1.destroy();
+        sprite1 =  sprites.create(50, 80, spriteType);
+        sprite1.animations.add('walkN', [0, 1,2,3], 10, true);
+        sprite1.animations.add('walkS', [4, 5,6,7], 10, true);
+        sprite1.animations.add('walkW', [8, 9,10,11], 10, true);
+        sprite1.animations.add('walkE', [12, 13,14,15], 10, true);
+        r = Math.random();
+        if(r<0.33)
+            spriteType = 'npc2';
+        else if(r<0.66)
+            spriteType = 'npc';
+        else 
+            spriteType = 'npc3';
+        sprite2.destroy();
+        sprite2 =  sprites.create(50, 80, spriteType);
+
+        sprite1.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
+        sprite1.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
+        sprite2.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
+        sprite2.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
+        sprite2.animations.add('walkN', [0, 1,2,3], 10, true);
+        sprite2.animations.add('walkS', [4, 5,6,7], 10, true);
+        sprite2.animations.add('walkW', [8, 9,10,11], 10, true);
+        sprite2.animations.add('walkE', [12, 13,14,15], 10, true);
+
+
         var r = game.rnd.integerInRange(0, 3);
         if(r===0){
             currentShape = lissajous;
@@ -382,7 +475,18 @@ window.onload = function() {
                 var randX = (Math.random()-0.5)*screenWidth+screenWidth/2;
                 var randY = (Math.random()-0.5)*screenHeight+screenHeight/2;
                 //console.log(randX);
-                NPCarray[currentNPCs] = makeNPC(randX, randY, currentShape, placeShifts[i], 'npc', currentNPCs);
+
+                var spriteType;
+                var r = Math.random();
+                if(r<0.33)
+                    spriteType = 'npc2';
+                else if(r<0.66)
+                    spriteType = 'npc';
+                else 
+                    spriteType = 'npc3';
+
+
+                NPCarray[currentNPCs] = makeNPC(randX, randY, currentShape, placeShifts[i], spriteType, currentNPCs);
                 //console.log(NPCarray[currentNPCs].body.x);
                 NPCarray[currentNPCs].animations.play('walk');
                 currentNPCs++;
@@ -466,12 +570,26 @@ window.onload = function() {
         sprites.enableBody = true;
         sprites.physicsBodyType = Phaser.Physics.ARCADE;
 
-        sprite1 = sprites.create(50, 80, 'npc');
+        var spriteType;
+        var r = Math.random();
+        if(r<0.33)
+            spriteType = 'npc2';
+        else if(r<0.66)
+            spriteType = 'npc';
+        else 
+            spriteType = 'npc3';
+
+
+        sprite1 = sprites.create(50, 80, spriteType);
         sprite1.inputEnabled = true;
         sprite1.events.onInputDown.add(player1listener, this);
         
-        sprite1.animations.add('walk');
-        sprite1.animations.play('walk', 5, true);
+        sprite1.animations.add('walkN', [0, 1,2,3], 10, true);
+        sprite1.animations.add('walkS', [4, 5,6,7], 10, true);
+        sprite1.animations.add('walkW', [8, 9,10,11], 10, true);
+        sprite1.animations.add('walkE', [12, 13,14,15], 10, true);
+
+        sprite1.animations.play('walkN', 5, true);
         sprite1.body.collideWorldBounds = true;
         sprite1.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
         sprite1.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
@@ -480,13 +598,26 @@ window.onload = function() {
         sprite1.maxHealth = 50;
         sprite1.health = 100;
 
-     
-        sprite2 = sprites.create(50, 80, 'npc');
+        
+        var r = Math.random();
+        if(r<0.33)
+            spriteType = 'npc2';
+        else if(r<0.66)
+            spriteType = 'npc';
+        else 
+            spriteType = 'npc3';
+
+
+        sprite2 = sprites.create(50, 80, spriteType);
         
         sprite2.events.onInputDown.add(player2listener, this);
         sprite2.inputEnabled = true;
-        sprite2.animations.add('walk');
-        sprite2.animations.play('walk', 5, true);
+        
+        sprite2.animations.add('walkN', [0, 1,2,3], 10, true);
+        sprite2.animations.add('walkS', [4, 5,6,7], 10, true);
+        sprite2.animations.add('walkW', [8, 9,10,11], 10, true);
+        sprite2.animations.add('walkE', [12, 13,14,15], 10, true);
+        sprite2.animations.play('walkN', 5, true);
         sprite2.body.collideWorldBounds = true;
         sprite2.x = (Math.random()-0.5)*screenWidth+screenWidth/2;
         sprite2.y = (Math.random()-0.5)*screenHeight+screenHeight/2;
@@ -534,6 +665,27 @@ window.onload = function() {
         return false;
     }
 
+
+     function updatePlayer(player){
+            var vecFrom = new Phaser.Point(player.x, player.y);
+            var fire = new Phaser.Point(screenWidth/2, screenHeight/2);
+            dir = Phaser.Point.subtract(vecFrom, fire);
+            //dir = dir.normalize();
+            axis = new Phaser.Point(-1,0);
+            var angle2 = Phaser.Point.angle(axis, dir);
+            angle2 = angle2/Math.PI*360;
+            if(angle2<35&&angle2>-35)
+                player.animations.play('walkW');
+            if(angle2 >35&&angle2 <145)
+                player.animations.play('walkN');
+            if(angle2 >145 && angle2 <180)
+                player.animations.play('walkE');
+            if(angle2 >-180 && angle2 < -145)
+                player.animations.play('walkE');
+            if(angle2 < -35 && angle2 > -145)
+                player.animations.play('walkS');
+    }
+
     function togglePause() {
         game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     }
@@ -558,8 +710,12 @@ window.onload = function() {
     	sprite1.body.velocity.x = 0;
 		sprite1.body.velocity.y = 0;
 
+
         sprite2.body.velocity.x = 0;
         sprite2.body.velocity.y = 0;
+
+        updatePlayer(sprite1);
+        updatePlayer(sprite2);
 
 		game.world.wrap(sprite1, 0, true);
         game.world.wrap(sprite2, 0, true);
