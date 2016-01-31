@@ -15,19 +15,13 @@ img{
     vertical-align: middle;
 }
 canvas{
-/*<<<<<<< HEAD*/
     left: 50%;
     top:50%;
     margin-left: -512px;
     margin-top: -384px;
     display: block;
     position: absolute;
-/*=======*/
-/*    margin: 0 auto;
-    display: block;
-    position: relative;*/
-/*>>>>>>> origin/master*/
-    border: 2px solid white;
+/*    border: 2px solid white;*/
     opacity:0;
     max-width: 1024px;
     max-height: 768px;
@@ -39,41 +33,52 @@ canvas{
     text-align: center;
     display: block;
     width: 100%;
-    z-index: 99999;
+    z-index: 99999999999999999999999999999;
     opacity: 0;
-/*<<<<<<< HEAD*/
     top:50%;
     margin-top: -384px;
-/*=======
->>>>>>> origin/master*/
+    height: 768px;
 }
-.play,
-.loser{
+.play{
     position: absolute;
-/*<<<<<<< HEAD*/
     top: 73%;
     left: 50%;
     margin-left: -122px; 
     width: 244px;
     height: 81px;
     cursor: pointer;
-/*=======
-    top: 75%;
-    left: 50%;
-    margin-left: -100px; 
-    width: 200px;
-    height: 60px;
->>>>>>> origin/master*/
+    z-index: 99999999999999999999;
 }
-.loser{
+.player1Box,
+.player2Box{
+    width: 512px;
+    height: 648px;
+    padding-top: 120px;
+    position: absolute;
+    top:50%;
+    left:50%;
     display: none;
+    opacity:0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99999;
+    margin-top: -384px;
+}
+.player1Box{
+    margin-left: -512px;
+}
+.fade{
+    width: 1024px;
+    height: 768px;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: black;
     opacity: 0;
-/*<<<<<<< HEAD*/
+    margin-left: -512px;
+    margin-top: -384px;
+    z-index: 9999;
 }
 
 
 
-
-/*=======*/
-}
-/*>>>>>>> origin/master*/

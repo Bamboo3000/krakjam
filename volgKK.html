@@ -71,7 +71,7 @@
 
             game.stage.backgroundColor = '#262425';
 
-            game.load.image('village', 'img/village.jpg');
+            game.load.spritesheet('village', 'img/ziemia.jpg');
             game.load.image('chata1', 'img/chata1.jpg');
             game.load.image('chata2', 'img/chata2.jpg');
             game.load.image('chata3', 'img/chata3.jpg');
@@ -130,7 +130,7 @@
 
 
             game.physics.setBoundsToWorld();
-            // game.add.sprite(0, 0, 'village'); 
+            game.add.sprite(0, 0, 'village'); 
             
             var studnias = game.add.group();
             studnias.enableBody = true;
@@ -268,10 +268,6 @@
                     sprite1.body.velocity.y = -(speed/Math.sqrt(2));
                     sprite1.body.velocity.x = (speed/Math.sqrt(2));
                 }
-                // else if (qKey.isDown){
-                //     sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-                //     sprite1.body.velocity.x = -(speed/4);
-                // }
                 else {
                     sprite1.body.velocity.y = -(speed);
                 }
@@ -315,20 +311,6 @@
                     sprite1.body.velocity.x = (speed);
                 }
 		    }
-            // else if (qKey.isDown){
-            //     if(wKey.isDown){
-            //         sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-            //         sprite1.body.velocity.x = -(speed/4);
-            //     } 
-            //     else if (aKey.isDown){
-            //         sprite1.body.velocity.y = -(speed/2);
-            //         sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-            //     }
-            //     else {
-            //         sprite1.body.velocity.y = -(speed/Math.sqrt(2));
-            //         sprite1.body.velocity.x = -(speed/Math.sqrt(2));
-            //     }
-            // }
 
 
 

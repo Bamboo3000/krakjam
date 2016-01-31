@@ -16,8 +16,10 @@
 <div class="intro">
     <img src="img/intro.jpg" alt="">
     <div class="play"><img src="img/play.png" alt=""></div>
-    <h1 class="loser">LOSER!</h1>
 </div>
+<div class="player1Box"></div>
+<div class="player2Box"></div>
+<div class="fade"></div>
 
 <script type="text/javascript">
 
@@ -72,7 +74,7 @@
 
             game.stage.backgroundColor = '#262425';
 
-            game.load.image('village', 'img/village.jpg');
+            game.load.spritesheet('village', 'img/ziemia.jpg', 1024, 768, 2);
             game.load.image('chata1', 'img/chata1.jpg');
             game.load.image('chata2', 'img/chata2.jpg');
             game.load.image('chata3', 'img/chata3.jpg');
@@ -83,18 +85,51 @@
             game.load.spritesheet('npc2', 'img/npc2.png', 50, 80, 2);
             game.load.spritesheet('npc3', 'img/npc3.png', 50, 80, 4);
 
+            // $('.intro').css('display', 'block').find('> img').css('display', 'none');
+            // $('.play').addClass('restart');
+            // $('.player1Box').prepend('<img src="img/win.jpg" alt="">');
+            // $('.player2Box').prepend('<img src="img/over.jpg" alt="">');
+            // $('.player1Box, .player2Box').css('display', 'block').animate({
+            //     opacity: 1
+            // }, 500);
+            // setTimeout(function(){
+            //     $('.play, .intro').animate({
+            //         opacity: 1
+            //     }, 300);
+            // }, 1000);
+
             $('.intro').animate({
                 opacity: 1
             }, 1000).promise().done(function(){
                 $('.play').on('click touchstart', function(){
-                    $('.intro').animate({
-                        opacity: 0
-                    }, 1000, function(){
-                         $('.intro').css('display', 'none');
-                    });
-                    $('canvas').animate({
-                        opacity: 1 
-                    }, 1000);
+                    if($(this).hasClass('restart')){
+                        $('.player1Box, .player2Box').hide(1).find('> img').remove();
+                        $('.intro').css('display', 'none');
+                        // $('.fade').css('opacity', '1', 'display', 'block');
+                        scoreText1.destroy();
+                        scoreText2.destroy();
+                        winText.destroy();
+                        lostText.destroy();
+                        scoreText1 = game.add.text(32, 32, 'Player 1: 0', { fontSize: '21px', fill: '#fff' });
+                        scoreText2 = game.add.text(740, 32, 'Player 2: 0', { fontSize: '21px', fill: '#fff' });
+                        score1 = 0;
+                        score2 = 0;
+                        newGame();
+                    } else {
+                        $('.intro').animate({
+                            opacity: 0
+                        }, 500, function(){
+                             $('.intro').css('display', 'none');
+                        });
+                        setTimeout(function(){
+                            $('canvas').animate({
+                                opacity: 1 
+                            }, 500);
+                        }, 500);
+                        setTimeout(function(){
+                            pause = false;
+                        }, 1250);
+                    }
                 });
             });
 
@@ -114,10 +149,10 @@
         screenWidth = 1024;
         screenHeight = 768;
         positionRadius = 50;
-        var speed = 150;
+        var speed = 200;
         var totalShifts = 40;
         var acceptedRadius = 50;
-        var playerSpeed = 200;
+        // var playerSpeed = 200;
         var NPCprobability = 0.75;
         var placeShifts = [];
         var currentNPCs;
@@ -219,20 +254,76 @@
         }
 
         function player1Wins(){
-            game.add.text(32, 64, 'Player 1 WINS!', { fontSize: '21px', fill: '#fff' });
-            game.add.text(740, 64, 'Player 2 LOST!', { fontSize: '21px', fill: '#fff' });
+            winText = game.add.text(32, 64, 'Player 1 WINS!', { fontSize: '21px', fill: '#fff' });
+            lostText = game.add.text(740, 64, 'Player 2 LOST!', { fontSize: '21px', fill: '#fff' });
             pause = true;
+            $('.intro').css('display', 'block').find('> img').css('display', 'none');
+            $('.play').addClass('restart');
+            $('.player1Box').prepend('<img src="img/win.jpg" alt="">');
+            $('.player2Box').prepend('<img src="img/over.jpg" alt="">');
+            $('.player1Box, .player2Box').css('display', 'block').animate({
+                opacity: 1
+            }, 500);
+            setTimeout(function(){
+                $('.play, .intro').animate({
+                    opacity: 1
+                }, 300);
+            }, 1000);
         }
         function player2Wins(){
-            game.add.text(740, 64, 'Player 2 WINS!', { fontSize: '21px', fill: '#fff' });
-            game.add.text(32, 64, 'Player 1 LOST!', { fontSize: '21px', fill: '#fff' });
+            winText = game.add.text(740, 64, 'Player 2 WINS!', { fontSize: '21px', fill: '#fff' });
+            lostText = game.add.text(32, 64, 'Player 1 LOST!', { fontSize: '21px', fill: '#fff' });
             pause = true;
+            $('.intro').css('display', 'block').find('> img').css('display', 'none');
+            $('.play').addClass('restart');
+            $('.player2Box').prepend('<img src="img/win.jpg" alt="">');
+            $('.player1Box').prepend('<img src="img/over.jpg" alt="">');
+            $('.player1Box, .player2Box').css('display', 'block').animate({
+                opacity: 1
+            }, 500);
+            setTimeout(function(){
+                $('.play, .intro').animate({
+                    opacity: 1
+                }, 300);
+            }, 1000);
         }
         function NPClistener(){
             if(turn===1){
+                score1++;
+                scoreText1.text = 'Player 1: ' + score1;
+            } else{
                 score2++;
                 scoreText2.text = 'Player 2: ' + score2;
-            }else{
+            }
+            if(score1 === 3){
+                player1Wins();
+            } else if(score2 === 3){
+                player2Wins();
+            } else{
+                $('.fade').css('display', 'block').animate({
+                    opacity: 1
+                }, 500);
+                setTimeout(function(){
+                    $('.fade').animate({
+                        opacity: 0
+                    }, 500);
+                    newGame();
+                    pause = true;
+                }, 500);
+                setTimeout(function(){
+                    $('.fade').css('display', 'none');
+                }, 1000);
+                setTimeout(function(){
+                    pause = false;
+                }, 1250);
+            }
+            
+        }
+        function player1listener(){
+            if(turn===1){
+                score2++;
+                scoreText2.text = 'Player 2: ' + score2;
+            } else {
                 score1++;
                 scoreText1.text = 'Player 1: ' + score1;
             }
@@ -241,36 +332,55 @@
             } else if(score2 === 3){
                 player2Wins();
             } else{
-                newGame();
+                $('.fade').css('display', 'block').animate({
+                    opacity: 1
+                }, 500);
+                setTimeout(function(){
+                    $('.fade').animate({
+                        opacity: 0
+                    }, 500);
+                    newGame();
+                    pause = true;
+                }, 500);
+                setTimeout(function(){
+                    $('.fade').css('display', 'none');
+                }, 1000);
+                setTimeout(function(){
+                    pause = false;
+                }, 1250);
             }
-            // newGame();
-            // console.log('npc clicked');
-            
-        }
-        function player1listener(){
-            score2++;
-            scoreText2.text = 'Player 2: ' + score2;
-            if(score1 === 3){
-                player1Wins();
-            } else if(score2 === 3){
-                player2Wins();
-            } else{
-                newGame();
-            }
-            // newGame();
             console.log('player1 clicked');
         }
         function player2listener(){
-            score1++;
-            scoreText1.text = 'Player 1: ' + score1;
+            if(turn===1){
+                score2++;
+                scoreText2.text = 'Player 2: ' + score2;
+            } else {
+                score1++;
+                scoreText1.text = 'Player 1: ' + score1;
+            }
             if(score1 === 3){
                 player1Wins();
             } else if(score2 === 3){
                 player2Wins();
             } else{
-                newGame();
+                $('.fade').css('display', 'block').animate({
+                    opacity: 1
+                }, 500);
+                setTimeout(function(){
+                    $('.fade').animate({
+                        opacity: 0
+                    }, 500);
+                    newGame();
+                    pause = true;
+                }, 500);
+                setTimeout(function(){
+                    $('.fade').css('display', 'none');
+                }, 1000);
+                setTimeout(function(){
+                    pause = false;
+                }, 1250);
             }
-            // newGame();
             console.log('player2 clicked');
         }
 
@@ -310,38 +420,28 @@
             }
         }
 
-        $(".play").on("click",function(){
-            pause = false;
-        }); 
-
         function create () {
 
-            
-            
-            // score1 = 0;
-            // score2 = 0;
             timer = game.time.create(false);
             timer.start();
-
-            // var rects = game.add.group();
-            // rects.enableBody = true;
-            // rects.physicsBodyType = Phaser.Physics.ARCADE;
-
-            // rect = rects.create(500, 500, null);
-            // rect.body.collideWorldBounds = true;
-            // rect.body.setSize(50, 50, 0, 0);
-
-            // graphics = game.add.graphics(game.world.centerX, game.world.centerY);
-            // graphics.lineStyle(8, 0xffd900);
-            // graphics.drawCircle(0, 0, 300);
-            
-            // game.world.setBounds(0.5, 0.5, 800, 600);
-
-
-            
             
             game.physics.setBoundsToWorld();
-            game.add.sprite(0, 0, 'village');
+            // game.add.sprite(0, 0, 'village');
+            var ziemias = game.add.group();
+            ziemia = ziemias.create(1024, 768, 'village');
+            ziemia.animations.add('ziemia');
+            ziemia.animations.play('ziemia', 5, true);
+            ziemia.anchor.setTo(1, 1);
+
+            var fires = game.add.group();
+            fires.enableBody = true;
+            fires.physicsBodyType = Phaser.Physics.ARCADE;
+            fire = fires.create(50, 50, 'fire');
+            fire.animations.add('fire');
+            fire.animations.play('fire', 5, true);
+            fire.x = 512;
+            fire.y = 384;
+            fire.anchor.setTo(0.5, 0.5);
             
 
             sprites = game.add.group();
@@ -465,84 +565,125 @@
             }
 
         	if (wKey.isDown){
-		        // console.log('w');
-		        sprite1.body.velocity.y = -(playerSpeed);
-                // sprite1.damage(1);
-                // console.log(sprite1.health);
-		    }
-		    if (sKey.isDown){
-		        // console.log('s');
-		        sprite1.body.velocity.y = (playerSpeed);
-                // sprite1.heal(1);
-                // console.log(sprite1.health);
-		    }
-		    if (aKey.isDown){
-		        // console.log('a');
-		        sprite1.body.velocity.x = -(playerSpeed);
-		    }
-		    if (dKey.isDown){
-		        // console.log('d');
-		        sprite1.body.velocity.x = (playerSpeed);
-		    }
+                if(aKey.isDown){
+                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
+                } 
+                else if (dKey.isDown){
+                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else {
+                    sprite1.body.velocity.y = -(speed);
+                }
+            }
+            else if (sKey.isDown){
+                if(aKey.isDown){
+                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
+                } 
+                else if (dKey.isDown){
+                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else {
+                    sprite1.body.velocity.y = (speed);
+                }
+            }
+            else if (aKey.isDown){
+                if(wKey.isDown){
+                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
+                } 
+                else if (sKey.isDown){
+                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = -(speed/Math.sqrt(2));
+                }
+                else {
+                    sprite1.body.velocity.x = -(speed);
+                }
+            }
+            else if (dKey.isDown){
+                if(wKey.isDown){
+                    sprite1.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
+                } 
+                else if (sKey.isDown){
+                    sprite1.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite1.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else {
+                    sprite1.body.velocity.x = (speed);
+                }
+            }
 
             if (pKey.isDown){
                 pause = true;
-                turn = 1;
+                turn = 2;
             }
 
             if (UKey.isDown){
-                // console.log('w');
-                sprite2.body.velocity.y = -(speed);
-                // sprite1.damage(1);
-                // console.log(sprite1.health);
+                if(LKey.isDown){
+                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
+                }
+                else if(RKey.isDown){
+                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else{
+                    sprite2.body.velocity.y = -(speed);
+                }
             }
-            if (DKey.isDown){
-                // console.log('s');
-                sprite2.body.velocity.y = (speed);
-                // sprite1.heal(1);
-                // console.log(sprite1.health);
+            else if (DKey.isDown){
+                if(LKey.isDown){
+                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
+                }
+                else if(RKey.isDown){
+                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else{
+                    sprite2.body.velocity.y = (speed);
+                }
             }
-            if (LKey.isDown){
-                // console.log('a');
-                sprite2.body.velocity.x = -(speed);
+            else if (LKey.isDown){
+                if(UKey.isDown){
+                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
+                }
+                else if(DKey.isDown){
+                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = -(speed/Math.sqrt(2));
+                }
+                else{
+                    sprite2.body.velocity.x = -(speed);
+                }
             }
-            if (RKey.isDown){
-                // console.log('d');
-                sprite2.body.velocity.x = (speed);
+            else if (RKey.isDown){
+                if(UKey.isDown){
+                    sprite2.body.velocity.y = -(speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else if(DKey.isDown){
+                    sprite2.body.velocity.y = (speed/Math.sqrt(2));
+                    sprite2.body.velocity.x = (speed/Math.sqrt(2));
+                }
+                else{
+                    sprite2.body.velocity.x = (speed);
+                }
             }
 
             if (PKey.isDown){
-                turn = 2;
+                turn = 1;
                 pause = true;
             }
             sprites.sort('y', Phaser.Group.SORT_ASCENDING);
-            game.physics.arcade.collide(sprite1, sprite2, collisionHandler, null, this);
-
-            // if(sprite1.health === 0){
-            //     $('.play').css('display', 'none');
-            //     $('.loser').css('display', 'block');
-            //     $('.intro, .loser').animate({
-            //         opacity: 1
-            //     }, 1000);
-            // }
+            game.physics.arcade.collide(sprite1, sprite2, null, null, this);
 
 
         }
-
-        function collisionHandler (obj1, obj2) {
-
-            game.stage.backgroundColor = '#992d2d';
-
-        }
-
-        // function checkOverlap(sprite1, graphics) {
-
-        //     var boundsA = sprite1.getBounds();
-        //     var boundsB = graphics.getBounds();
-
-        //     return Phaser.Rectangle.intersects(boundsA, boundsB);
-
-        // }
 
         function render () {
 
