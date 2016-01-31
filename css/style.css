@@ -15,9 +15,12 @@ img{
     vertical-align: middle;
 }
 canvas{
-    margin: 0 auto;
+    left: 50%;
+    top:50%;
+    margin-left: -512px;
+    margin-top: -384px;
     display: block;
-    position: relative;
+    position: absolute;
     border: 2px solid white;
     opacity:0;
     max-width: 1024px;
@@ -32,17 +35,24 @@ canvas{
     width: 100%;
     z-index: 99999;
     opacity: 0;
+    top:50%;
+    margin-top: -384px;
 }
 .play,
 .loser{
     position: absolute;
-    top: 75%;
+    top: 73%;
     left: 50%;
-    margin-left: -100px; 
-    width: 200px;
-    height: 60px;
+    margin-left: -122px; 
+    width: 244px;
+    height: 81px;
+    cursor: pointer;
 }
 .loser{
     display: none;
     opacity: 0;
 }
+
+
+
+
